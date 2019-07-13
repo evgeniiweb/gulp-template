@@ -12,7 +12,7 @@ const browserSync = require('browser-sync').create();
 
 // styles task dev
 task('styles-dev', () => {
-    return src('./src/assets/sass/**/*.*')
+    return src('./src/sass/**/*.*')
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(concat('style.min.css'))
@@ -24,12 +24,12 @@ task('styles-dev', () => {
             level: 2
         }))
         .pipe(sourcemaps.write('./'))
-        .pipe(dest('./src/assets/css'))
+        .pipe(dest('./src/css'))
         .pipe(browserSync.stream());
 });
 // styles task build
 task('styles-build', () => {
-    return src('./src/assets/sass/**/*.*')
+    return src('./src/sass/**/*.*')
         .pipe(sass())
         .pipe(concat('style.min.css'))
         .pipe(autoprefixer({
@@ -39,13 +39,13 @@ task('styles-build', () => {
         .pipe(cleanCSS({
             level: 2
         }))
-        .pipe(dest('./build/assets/css'))
+        .pipe(dest('./build'))
         .pipe(browserSync.stream());
 });
 
 // scripts task dev
 task('scripts-dev', () => {
-    return src(['./src/assets/js/**/*.*', '!src/assets/js/**/*.min.js', '!src/assets/js/**/*.min.js.map'])
+    return src(['./src/js/**/*.*', '!src/js/**/*.min.js', '!src/js/**/*.min.js.map'])
         .pipe(sourcemaps.init())
         .pipe(concat('script.min.js'))
         .pipe(babel({
@@ -53,24 +53,24 @@ task('scripts-dev', () => {
         }))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(dest('./src/assets/js'))
+        .pipe(dest('./src/js'))
         .pipe(browserSync.stream());
 });
 // scripts task build
 task('scripts-build', () => {
-    return src(['./src/assets/js/**/*.*', '!src/assets/js/**/*.min.js', '!src/assets/js/**/*.min.js.map'])
+    return src(['./src/js/**/*.*', '!src/js/**/*.min.js', '!src/js/**/*.min.js.map'])
         .pipe(concat('script.min.js'))
         .pipe(babel({
             presets: ['@babel/env']
         }))
         .pipe(uglify())
-        .pipe(dest('./build/assets/js'))
+        .pipe(dest('./build'))
         .pipe(browserSync.stream());
 });
 
 // images task build
 task('images-build', () => {
-   return src('./src/assets/images/**')
+   return src('./src/images/**')
        .pipe(imagemin([
            imagemin.jpegtran({progressive: true}),
            imagemin.optipng({optimizationLevel: 5}),
@@ -81,13 +81,13 @@ task('images-build', () => {
                ]
            })
        ]))
-       .pipe(dest('./build/assets/images'))
+       .pipe(dest('./build/images'))
 });
 
 // libs task build
 task('libs-build', () => {
-    return src('./src/assets/libs/**/*.*')
-        .pipe(dest('./build/assets/libs'))
+    return src('./src/libs/**/*.*')
+        .pipe(dest('./build/libs'))
 });
 
 // root files build
@@ -108,9 +108,9 @@ task('watch', () => {
             baseDir: './src'
         }
     });
-    watch('./src/assets/images/**');
-    watch('./src/assets/sass/**/*.sass', series('styles-dev'));
-    watch(['./src/assets/js/**/*.*', '!src/assets/js/**/*.min.js', '!src/assets/js/**/*.min.js.map'], series('scripts-dev'));
+    watch('./src/images/**');
+    watch('./src/sass/**/*.sass', series('styles-dev'));
+    watch(['./src/js/**/*.*', '!src/js/**/*.min.js', '!src/js/**/*.min.js.map'], series('scripts-dev'));
     watch('./src/*.html').on('change', browserSync.reload);
 });
 
